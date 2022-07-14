@@ -45,6 +45,11 @@ async def list_items(
     items_for_response = [
         ItemForResponse.from_orm(item) for item in items
     ]
+
+    for item in items_for_response:
+        if not item.image:
+            item.image = 'placeholder.png'
+
     return ListOfItemsInResponse(
         items=items_for_response,
         items_count=len(items),

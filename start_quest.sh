@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 API_BASE_URL="${API_BASE_URL:="https://engine.wilco.gg"}"
 WILCO_ID="`cat .wilco 2> /dev/null`"
