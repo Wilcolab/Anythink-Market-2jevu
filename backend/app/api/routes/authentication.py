@@ -43,7 +43,6 @@ async def login(
         user,
         str(settings.secret_key.get_secret_value()),
     )
-    print("User image: %s" % user.image, flush=True)
     return UserInResponse(
         user=UserWithToken(
             username=user.username,
