@@ -91,7 +91,7 @@ async def register(
             username=user.username,
             email=user.email,
             bio=user.bio,
-            image=user.image,
+            image=user.image or "placeholder.png",
             token=token,
         ),
     )
