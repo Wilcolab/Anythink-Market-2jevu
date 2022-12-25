@@ -28,6 +28,7 @@ class ItemInCreate(RWSchema):
     def empty_string_to_default(cls, v):
         if v == "":
             return r"/placeholder.png"
+        
         return v
 
 
