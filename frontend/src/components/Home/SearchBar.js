@@ -10,7 +10,7 @@ const SearchBar = ({ setSearchTerm }) => {
   }, [tmpSearchTerm, setSearchTerm]);
 
   return (
-    <form>
+    <form id="search-box">
       <input
         type="text"
         placeholder="What is it that you truly desire?"
