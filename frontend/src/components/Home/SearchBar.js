@@ -10,12 +10,13 @@ const SearchBar = ({ setSearchTerm }) => {
   }, [tmpSearchTerm, setSearchTerm]);
 
   return (
-    <form id="search-box">
+    <form>
       <input
         type="text"
         placeholder="What is it that you truly desire?"
         value={tmpSearchTerm}
         onChange={(e) => setTmpSearchTerm(e.target.value)}
+        id="search-box"
       />
     </form>
   );
