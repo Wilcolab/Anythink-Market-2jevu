@@ -16,6 +16,7 @@ const mapStateToProps = (state) => ({
   ...state.home,
   appName: state.common.appName,
   token: state.common.token,
+  filteredItems: state.home.items || [],
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -23,10 +24,26 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch({ type: APPLY_TAG_FILTER, tag, pager, payload }),
   onLoad: (tab, pager, payload) =>
     dispatch({ type: HOME_PAGE_LOADED, tab, pager, payload }),
+  onLoadFiltered: (tab, pager, payload) =>
+    dispatch({ type: HOME_PAGE_LOADED, tab, pager, payload }),
   onUnload: () => dispatch({ type: HOME_PAGE_UNLOADED }),
 });
 
 class Home extends React.Component {
+  constructor() {
+    super();
+    this.onKeywordChange = (keyword) => {
+      const tab = "all";
+      const itemsFilteredPromise = agent.Items.filtered(keyword);
+
+      this.props.onLoadFiltered(
+        tab,
+        itemsFilteredPromise,
+        Promise.all([agent.Tags.getAll(), itemsFilteredPromise])
+      );
+    };
+  }
+
   componentWillMount() {
     const tab = "all";
     const itemsPromise = agent.Items.all;
@@ -45,8 +62,7 @@ class Home extends React.Component {
   render() {
     return (
       <div className="home-page">
-        <Banner />
-
+        <Banner setSearch={this.onKeywordChange} />
         <div className="container page">
           <Tags tags={this.props.tags} onClickTag={this.props.onClickTag} />
           <MainView />
