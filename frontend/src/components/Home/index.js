@@ -1,6 +1,6 @@
 import Banner from "./Banner";
 import MainView from "./MainView";
-import React from "react";
+import React, { useEffect } from "react";
 import Tags from "./Tags";
 import agent from "../../agent";
 import { connect } from "react-redux";
@@ -16,7 +16,6 @@ const mapStateToProps = (state) => ({
   ...state.home,
   appName: state.common.appName,
   token: state.common.token,
-  filteredItems: state.home.items || [],
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -24,52 +23,32 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch({ type: APPLY_TAG_FILTER, tag, pager, payload }),
   onLoad: (tab, pager, payload) =>
     dispatch({ type: HOME_PAGE_LOADED, tab, pager, payload }),
-  onLoadFiltered: (tab, pager, payload) =>
-    dispatch({ type: HOME_PAGE_LOADED, tab, pager, payload }),
   onUnload: () => dispatch({ type: HOME_PAGE_UNLOADED }),
 });
 
-class Home extends React.Component {
-  constructor() {
-    super();
-    this.onKeywordChange = (keyword) => {
-      const tab = "all";
-      const itemsFilteredPromise = agent.Items.filtered(keyword);
+const Home = ({onLoad, onUnload, tags, onClickTag}) => {
+  const tab = "all";
+  const itemsPromise = agent.Items.all;
 
-      this.props.onLoadFiltered(
-        tab,
-        itemsFilteredPromise,
-        Promise.all([agent.Tags.getAll(), itemsFilteredPromise])
-      );
-    };
-  }
-
-  componentWillMount() {
-    const tab = "all";
-    const itemsPromise = agent.Items.all;
-
-    this.props.onLoad(
+  useEffect(() => {
+    onLoad(
       tab,
       itemsPromise,
       Promise.all([agent.Tags.getAll(), itemsPromise()])
     );
-  }
+    return onUnload;
+  }, [onLoad, onUnload, tab, itemsPromise]);
 
-  componentWillUnmount() {
-    this.props.onUnload();
-  }
-
-  render() {
     return (
       <div className="home-page">
-        <Banner setSearch={this.onKeywordChange} />
+        <Banner />
+
         <div className="container page">
-          <Tags tags={this.props.tags} onClickTag={this.props.onClickTag} />
+          <Tags tags={tags} onClickTag={onClickTag} />
           <MainView />
         </div>
       </div>
     );
-  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
